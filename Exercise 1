@@ -1,0 +1,53 @@
+--Creating tables
+
+CREATE TABLE Employer (
+Employer_ID INTEGER PRIMARY KEY,
+FullName TEXT NOT NULL,
+JoiningDate DATETIME,
+CurrentPosition TEXT,
+Department TEXT,
+AssignedProject TEXT
+);
+
+CREATE TABLE Services (
+Software_ID INTEGER PRIMARY KEY,
+Name TEXT,
+Category TEXT,
+Size REAL,
+NumberOfInstallments INT
+);
+
+CREATE TABLE SoftwareRequest (
+Employer_ID INTEGER,
+Software_ID INTEGER,
+Request_StartDate DATE,
+Request_CloseDate DATE,
+Status TEXT NOT NULL,
+PRIMARY KEY (Employer_ID, Software_ID)
+FOREIGN KEY (Employer_ID) REFERENCES Employer (Employer_ID),
+FOREIGN KEY (Software_ID) REFERENCES Services (Software_ID)
+);
+
+--1st task
+
+CREATE TRIGGER IF NOT EXISTS request_1
+	AFTER INSERT ON SoftwareRequest
+	BEGIN
+		UPDATE Services SET NumberOfInstallments = NumberOfInstallments + 1 WHERE Software_ID = NEW.Software_ID;
+	END;
+
+CREATE TRIGGER IF NOT EXISTS request_2
+	BEFORE INSERT ON SoftwareRequest
+	BEGIN	
+		
+	END;
+	
+--2nd task
+
+INSERT INTO Employer (Employer_ID, FullName, JoiningDate, CurrentPosition, Department, AssignedProject) VALUES(1, 'Jeff Answell', '2010-12-10 11:00:00', 'Communication trainer', 'HR', 'Communication with confidence');
+INSERT INTO Employer (Employer_ID, FullName, JoiningDate, CurrentPosition, Department, AssignedProject) VALUES(2, 'David Attemborough', '2009-10-16 10:00:00', 'Biologist', 'Finance', 'Project Doc');
+INSERT INTO Employer (Employer_ID, FullName, JoiningDate, CurrentPosition, Department, AssignedProject) VALUES(3, 'Peter Parker', '2017-04-08 14:00:00', 'Pizza delivery man', 'Travel', 'Pizza time');
+INSERT INTO Services (Software_ID, Name, Category, Size, NumberOfInstallments) VALUES(101, 'Amazon Web Services', 'A', 2000, 20);
+INSERT INTO Services (Software_ID, Name, Category, Size, NumberOfInstallments) VALUES(102, 'Visual Studio Code', 'C', 9001, 7);
+INSERT INTO SoftwareRequest (Employer_ID, Software_ID, Request_StartDate, Request_CloseDate, Status) VALUES(2, 101, '2011-01-13', '2011-01-16', 'Valid');
+INSERT INTO SoftwareRequest (Employer_ID, Software_ID, Request_StartDate, Request_CloseDate, Status) VALUES(3, 102, '2017-05-02', '2017-05-03', 'Valid');
